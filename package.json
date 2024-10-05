@@ -1,0 +1,13 @@
+{
+  "name": "mark-it-down",
+  "version": "1.0.0",
+  "description": "A library for transforming markdown into html",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "/dist"
+  ],
+  "dependencies": {
+    "jasmine": "^5.3.1"
+  }
+}
