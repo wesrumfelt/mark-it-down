@@ -47,6 +47,12 @@ describe('Parse markdown', () => {
         expect(render(md)).to.equal(html);
     });
 
+    it('should not render as header1', () => {
+        const md = '#Sample Document'
+        const html = '<p>#Sample Document</p>\n'
+        expect(render(md)).to.equal(html);
+    });
+
     it('should render complex markdown correctly' , () => {
 
         const md = '# Sample Document\n' +
@@ -88,4 +94,24 @@ describe('Parse markdown', () => {
         expect(render(md)).to.equal(html);
     });
 
+    it('should not render as header1', () => {
+        const md = '#Sample Document'
+        const html = '<p>#Sample Document</p>\n'
+        expect(render(md)).to.equal(html);
+    });
+
+    it('should handle empty input', () => {
+        const md = ''
+        const html = ''
+        expect(render(md)).to.equal(html);
+    });
+
+    it('should throw error for non-string input', () => {
+        const md = ["sd"]
+        try {
+            render(md)
+        } catch (e) {
+            expect(e.message).to.equal('Input is not a string!');
+        }
+    });
 });

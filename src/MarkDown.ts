@@ -10,6 +10,9 @@ export class MarkDown {
         this.results = []
     }
 
+    /**
+     * Registers initial supported list of markdown handlers
+     */
     register() {
         // h1
         this.items.push(new MarkDownItem(/^#{1}\s(.*)/i, '<h1>$1</h1>', false))
@@ -27,6 +30,11 @@ export class MarkDown {
         this.items.push(new MarkDownItem(/\[([^\n]+)\]\(([^\n]+)\)/g, '<a href="$2">$1</a>', true))
     }
 
+    /**
+     * Compiles a running list of back-to-back unformatted lines wrapped in <p></p> tags
+     *
+     * @return {String}        HTML representation
+     */
     substituteUnformatted(): string {
         if (this.unformattedItems.length == 0) {
             return
@@ -40,30 +48,45 @@ export class MarkDown {
         this.results.push(val)
     }
 
-    renderHTML(val: string): string {
-        if (val === '') {
+    /**
+     * Handles HTML rendering for a given markdown string line
+     *
+     * @param  {String} line   Markdown-formatted line
+     * @return {String}        HTML representation
+     */
+    renderHTML(line: string): string {
+        if (line === '') {
             this.substituteUnformatted()
             return
         }
         let isUnformatted: boolean = true
         this.items.forEach((item) => {
-            if (item.test(val)) {
-                val = val.replace(new RegExp(item.regex), item.html)
+            if (item.test(line)) {
+                line = line.replace(new RegExp(item.regex), item.html)
                 if (!item.isUnformatted) {
                     isUnformatted = false
                 }
             }
         })
         if (isUnformatted) {
-            this.unformattedItems.push(val)
+            this.unformattedItems.push(line)
         } else {
             this.substituteUnformatted()
-            this.results.push(val)
+            this.results.push(line)
         }
     }
 
-    convert(vals: string[]): string {
-        vals.forEach((line) => this.renderHTML(line))
+    /**
+     * Handles line-by-line conversion for a given markdown string
+     *
+     * @param  {String} markdown   Markdown-formatted string
+     * @return {String}            HTML representation
+     */
+    convert(markdown: string): string {
+        if (typeof markdown !== 'string') {
+            throw new Error('Input is not a string!');
+        }
+        markdown.split('\n').forEach((line) => this.renderHTML(line))
         if (this.unformattedItems.length > 0) {
             this.substituteUnformatted()
         }
