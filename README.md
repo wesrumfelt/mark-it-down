@@ -2,9 +2,12 @@
 A Typescript library for transforming simple markdown into html
 
 ## Test it out
+(npm/node required)
+
 To test the library, run the included local testing file:
 ```console
-./test.ts
+npm install
+npx tsx ./test.ts
 ```
 
 ## Installation
