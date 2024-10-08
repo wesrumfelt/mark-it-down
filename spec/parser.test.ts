@@ -56,9 +56,7 @@ describe('Parse markdown', () => {
             'This is sample markdown for the [Mailchimp](https://www.mailchimp.com) homework assignment.'
 
         const html = '<h1>Sample Document</h1>\n' +
-            '\n' +
             '<p>Hello!</p>\n' +
-            '\n' +
             '<p>This is sample markdown for the <a href="https://www.mailchimp.com">Mailchimp</a> homework assignment.</p>' +
             '\n'
         expect(render(md)).to.equal(html);
@@ -80,16 +78,11 @@ describe('Parse markdown', () => {
             '## This is a header [with a link](http://yahoo.com)'
 
         const html = '<h1>Header one</h1>\n' +
-            '\n' +
             '<p>Hello there</p>\n' +
-            '\n' +
             '<p>How are you?\n' +
             'What\'s going on?</p>\n' +
-            '\n' +
             '<h2>Another Header</h2>\n' +
-            '\n' +
             '<p>This is a paragraph <a href="http://google.com">with an inline link</a>. Neat, eh?</p>\n' +
-            '\n' +
             '<h2>This is a header <a href="http://yahoo.com">with a link</a></h2>' +
             '\n'
         expect(render(md)).to.equal(html);

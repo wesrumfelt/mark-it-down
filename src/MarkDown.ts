@@ -1,11 +1,13 @@
 export class MarkDown {
     items: MarkDownItem[]
     unformattedItems: string[]
+    results: string[]
 
     constructor() {
         this.items = []
         this.register()
         this.unformattedItems = []
+        this.results = []
     }
 
     register() {
@@ -25,24 +27,50 @@ export class MarkDown {
         this.items.push(new MarkDownItem(/\[([^\n]+)\]\(([^\n]+)\)/g, '<a href="$2">$1</a>', true))
     }
 
-    substituteHTML(val: string): string {
-        if (val === '') {
+    substituteUnformatted(): string {
+        if (this.unformattedItems.length == 0) {
+            return
+        }
+        const items = this.unformattedItems.reduce((val, item) => {
+            val = val + item + "\n"
             return val
-        }
-        let unformatted = true
-        this.items.forEach((item) => {
-            if(item.test(val) && !item.isUnformatted) {
-                unformatted = false
-            }
-            val = val.replace(new RegExp(item.regex), item.html)
-        })
-        if (unformatted) {
-            this.unformattedItems.push(val)
-            val = `<p>${val}</p>`
-        } else {
+        }, '')
+        const val = `<p>${items.slice(0, -1)}</p>`
+        this.unformattedItems = []
+        this.results.push(val)
+    }
 
+    renderHTML(val: string): string {
+        if (val === '') {
+            this.substituteUnformatted()
+            return
         }
-        return val
+        let isUnformatted: boolean = true
+        this.items.forEach((item) => {
+            if (item.test(val)) {
+                val = val.replace(new RegExp(item.regex), item.html)
+                if (!item.isUnformatted) {
+                    isUnformatted = false
+                }
+            }
+        })
+        if (isUnformatted) {
+            this.unformattedItems.push(val)
+        } else {
+            this.substituteUnformatted()
+            this.results.push(val)
+        }
+    }
+
+    convert(vals: string[]): string {
+        vals.forEach((line) => this.renderHTML(line))
+        if (this.unformattedItems.length > 0) {
+            this.substituteUnformatted()
+        }
+        return this.results.reduce((val, item) => {
+            val = val + item + "\n"
+            return val
+        }, '')
     }
 }
 
